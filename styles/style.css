@@ -1,0 +1,49 @@
+@font-face {
+    font-family: "Blind Melon";
+    src: url("../fonts/BLINDMELON.TTF");
+}
+
+@font-face {
+    font-family: "HurtMold";
+    src: url("../fonts/HURTM.ttf");
+}
+
+body{
+    /*background-color: #040004;*/
+    background-color: #2E0F3C;
+}
+
+.navbar{
+    /*background-color: #300344;*/
+    background-color: #5C2177;
+    border: none;
+
+}
+
+.app-title{
+    color: white;
+    font-family: "Blind Melon";
+    font-size: 30px;
+}
+
+.list-box{
+    width: 80%;
+    height: auto;
+    margin-top: 20px;
+    background-color: rgba(50, 46, 50, 0.8);
+    box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.75);
+    color: #A5A5A5;
+
+}
+
+.app-interface{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+
+}
+
+#no-lists{
+
+}
