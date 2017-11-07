@@ -10,16 +10,16 @@ let listCount = 0;
 
 //List object - each list has a name and an array of tasks, which are objects. Each task has a name and also a complete/incomplete status.
 //The initial taskList will have an example list for the user.
-let taskList = function(){
-    this.listName="test";
-    this.tasks=[{taskName: "make a list", done: false}]
+let list = function(){
+    this.listID = listCount;
+    this.listName="New List";
+    this.tasks=[{taskID: "0", taskName: "New Task", done: false}]
+    this.taskCount = 0;
 };
 
 function createNewList(){
-    let newList = function(){
-        this.listName="New List";
-        this.tasks=[{taskName: "New Task", done: false}]
-    };
+    let newList = new list();
+    listCount++;
     masterList.push(newList);
     saveLists(masterList);
 }
@@ -60,7 +60,7 @@ function saveLists(lists){
 
 
 //test list
-let testList = new taskList();
+let testList = new list();
 listCount++;
 
 masterList.push(testList);
