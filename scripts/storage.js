@@ -1,4 +1,4 @@
-export class Storage{
+class Storage{
     constructor(listName){
         this.MASTER_LIST_KEY = listName;
 
