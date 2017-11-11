@@ -10,13 +10,16 @@ let listCount = 0;
 //Initialize storage functions
 let storage = new Storage(LIST_KEY);
 
+//The list whose contents are being displayed
+let selectedList;
+
 //List object - each list has a name and an array of tasks, which are objects. Each task has a name and also a complete/incomplete status.
 //The initial taskList will have an example list for the user.
 let list = function(){
     this.listID = listCount;
     this.listName="New List";
     this.tasks=[{taskID: 0, taskName: "New Task", done: false}];
-    this.taskCount = 0;
+    this.taskCount = 1;
 };
 
 function createNewList(){
@@ -26,6 +29,10 @@ function createNewList(){
 
     displayNewestList(masterList[listCount-1]);
     storage.saveLists(masterList);
+}
+
+function displayNewestList(list){
+
 }
 
 $(function(){
@@ -43,49 +50,42 @@ $(function(){
 function displayExistingLists(){
     $("#no-lists").remove();
 
-    //I thought it would be nice to display the newer lists towards the top, so we'll be doing this loop backwards
-    for(let i = masterList.length-1; i > -1; i--){
-        $("#listDropdown").append("<li><a href=\"#\" onclick='selectList(this.id)' id='list"+ i +"'>"+ masterList[i].listName +"</a></li>");
-    }
-}
-
-function displayTasks(){
-
-}
-
-function displayNewestList(list){
-
-}
-
-function displayTasksForExistingLists(currentList){
-    let targetElem="#list" + currentList.listID;
-
-    if (currentList.tasks.length > 1){
-        for(let i = 0; i < currentList.tasks.length - 1; i++){
-            $(targetElem).append("<div class='task' contenteditable='true'>" + currentList.tasks[i].taskName + "</div>");
-            i++;
+    if (listCount > 0){
+        //I thought it would be nice to display the newer lists towards the top, so we'll be doing this loop backwards
+        for(let i = masterList.length-1; i > -1; i--){
+            $("#listDropdown").append("<li><a href=\"#\" onclick='displaySelectedList(this.id)' id='list"+ i +"'>"+ masterList[i].listName +"</a></li>");
         }
     }
     else{
-        $(targetElem).append("<div class='task' contenteditable='true'>" + currentList.tasks[0].taskName + "</div>");
+        $("#listDropdown").append();
+    }
+}
+
+function displaySelectedList(id){
+    let num = id.replace( /^\D+/g, '');
+    $("#list-title").text(masterList[num].listName);
+
+    displayTasksOfSelectedList(masterList[num]);
+}
+
+function displayTasksOfSelectedList(list){
+    $("#list-tasks").empty();
+
+    for (var i = 0; i < list.tasks.length; i++){
+        $("#list-tasks").append("<li class='list-group-item' id='task"+ list.tasks[i].taskID +"'><input type='checkbox'>" + list.tasks[i].taskName + "</li>");
     }
 
+    $("#list-tasks").append("<button type='button' class='btn btn-success' onclick='createNewTask("+ list +")'>+ Add New Task</button>")
 }
 
-function createNewTask(id){
-
-}
-
-function deleteList(){
+function createNewTask(list){
 
 }
 
-function selectList(id){
+function deleteList(list){
 
 }
 
 function clearCompleted(){
 
 }
-
-//rewrite this one down here
