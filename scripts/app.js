@@ -24,12 +24,52 @@ function createNewList(){
     listCount++;
     masterList.push(newList);
 
-    displayNewList(masterList[listCount-1]);
+    displayNewestList(masterList[listCount-1]);
     storage.saveLists(masterList);
 }
 
-function displayNewList(list){
-    $(".lists-display").append("<div id='list" + list.listID +"' style='border: 1px solid white; padding: 5px; width: auto;'><div class='list-title'>" + list.listName + "</div></div>");
+$(function(){
+    masterList = storage.getLists();
+    listCount = masterList.length;
+
+    if (listCount == 0){
+        $(".list-box").html("<div id='no-lists\'><p>You don't have any lists yet. Why not add one?</p></div>");
+    }
+    else{
+        displayExistingLists(masterList);
+    }
+});
+
+function displayExistingLists(){
+    $("#no-lists").remove();
+
+    //I thought it would be nice to display the newer lists towards the top, so we'll be doing this loop backwards
+    for(let i = masterList.length-1; i > -1; i--){
+        $("#listDropdown").append("<li><a href=\"#\" onclick='selectList(this.id)' id='list"+ i +"'>"+ masterList[i].listName +"</a></li>");
+    }
+}
+
+function displayTasks(){
+
+}
+
+function displayNewestList(list){
+
+}
+
+function displayTasksForExistingLists(currentList){
+    let targetElem="#list" + currentList.listID;
+
+    if (currentList.tasks.length > 1){
+        for(let i = 0; i < currentList.tasks.length - 1; i++){
+            $(targetElem).append("<div class='task' contenteditable='true'>" + currentList.tasks[i].taskName + "</div>");
+            i++;
+        }
+    }
+    else{
+        $(targetElem).append("<div class='task' contenteditable='true'>" + currentList.tasks[0].taskName + "</div>");
+    }
+
 }
 
 function createNewTask(id){
@@ -40,66 +80,12 @@ function deleteList(){
 
 }
 
-function editListTitle(currentList){
+function selectList(id){
 
 }
 
-function editTask(currentList){
+function clearCompleted(){
 
 }
 
-function selectList(){
-
-}
-
-function displayExistingLists(){
-    $("#no-lists").remove();
-
-    for(let i = 0; i < masterList.length-1; i++){
-        $(".lists-display").append("<div class='list' id='list" + masterList[i].listID +"' style='border: 1px solid white; padding: 5px; width: auto;'><div class='list-title'>" + masterList[i].listName + "</div></div>");
-
-        displayTasksForExistingLists(masterList[i]);
-
-        // for(let j = 0; j < masterList[i].tasks[j].length-1; j++){
-        //     $("#list" + masterList[i].listID).append("<div class='task'>" + masterList[i].tasks[j].taskName + "</div>");
-        //     j++;
-        // }
-
-
-    }
-}
-
-function displayTasksForExistingLists(currentList){
-    let targetElem="#list" + currentList.listID;
-
-    if (currentList.tasks.length > 1){
-        for(let i = 0; i < currentList.tasks.length - 1; i++){
-            $(targetElem).append("<div class='task'>" + currentList.tasks[i].taskName + "</div>");
-            i++;
-        }
-    }
-    else{
-        $(targetElem).append("<div class='task'>" + currentList.tasks[0].taskName + "</div>");
-    }
-
-}
-
-function initializeLists(){
-    masterList = storage.getLists();
-    listCount = masterList.length;
-
-    if (listCount == 0){
-        $(".list-box").html("<div id='no-lists\'><p>You don't have any lists yet. Why not add one?</p></div>");
-    }
-    else{
-        displayExistingLists(masterList);
-    }
-}
-
-//test list
-// let testList = new list();
-// listCount++;
-//
-// masterList.push(testList);
-//
-// console.log(masterList[0]);
+//rewrite this one down here

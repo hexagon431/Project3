@@ -6,10 +6,11 @@
     <link href="cdn/css/bootstrap.css" rel="stylesheet">
     <link href="styles/style.css" rel="stylesheet">
     <script src="scripts/jquery-3.2.1.js"></script>
+    <script src="cdn/js/bootstrap.js"></script>
     <script src="scripts/storage.js"></script>
     <script src="scripts/app.js"></script>
 </head>
-<body onload="initializeLists()">
+<body>
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="app-title">
@@ -20,10 +21,35 @@
 
     <div class="app-interface">
         <div class="list-box">
-            <a class="add-list-button" onclick="createNewList()">Add List +</a>
+            <!--<nav class="navbar navbar-default">-->
+                <!--<div class="container-fluid">-->
+                    <div class="controls">
+                        <button type="button" class="btn btn-success" onclick="createNewList()">Add List +</button>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="listSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                Lists
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="listSelector" id="listDropdown"></ul>
+                        </div>
+                    </div>
+                <!--</div>-->
+            <!--</nav>-->
 
-            <div class="lists-display">
 
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" id="list-title" contenteditable="true">Panel title</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">Cras justo odio</li>
+                        <li class="list-group-item">Dapibus ac facilisis in</li>
+                        <li class="list-group-item">Morbi leo risus</li>
+                        <li class="list-group-item">Porta ac consectetur ac</li>
+                        <li class="list-group-item">Vestibulum at eros</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

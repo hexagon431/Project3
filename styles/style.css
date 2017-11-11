@@ -83,3 +83,12 @@ body{
     flex-wrap: wrap;
     justify-content: space-around;
 }
+
+.controls{
+    display: flex;
+    justify-content: space-between;
+}
+
+.panel{
+    margin: 0;
+}
