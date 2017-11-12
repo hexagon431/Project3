@@ -1,21 +1,21 @@
 //The overall list of lists
 let masterList = [];
 
-$(function(){
-    masterList = storage.getLists();
-
-    if (masterList.length == 0){
-        $("#no-lists").show();
-        $("#delete-list-button").hide();
-        $("#clear-completed-button").hide();
-        $("#save-list-button").hide();
-    }
-    else{
-        $("#no-lists").hide();
-        displayExistingLists(masterList);
-        displayNewestList(masterList[masterList.length-1]);
-    }
-});
+// $(function(){
+//     masterList = storage.getLists();
+//
+//     if (masterList.length == 0){
+//         $("#no-lists").show();
+//         $("#delete-list-button").hide();
+//         $("#clear-completed-button").hide();
+//         $("#save-list-button").hide();
+//     }
+//     else{
+//         $("#no-lists").hide();
+//         displayExistingLists(masterList);
+//         displayNewestList(masterList[masterList.length-1]);
+//     }
+// });
 
 //The list whose contents are being displayed
 let selectedList;
