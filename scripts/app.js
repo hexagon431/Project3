@@ -1,14 +1,10 @@
 //The overall list of lists
 let masterList = [];
 
-//A counter that keeps track of how many lists the user has created.
-let listCount;
-
 $(function(){
     masterList = storage.getLists();
-    listCount = masterList.length;
 
-    if (listCount == 0){
+    if (masterList.length == 0){
         $("#no-lists").show();
         $("#delete-list-button").hide();
         $("#clear-completed-button").hide();
@@ -17,7 +13,7 @@ $(function(){
     else{
         $("#no-lists").hide();
         displayExistingLists(masterList);
-        displayNewestList(masterList[listCount-1]);
+        displayNewestList(masterList[masterList.length-1]);
     }
 });
 
@@ -27,10 +23,13 @@ let selectedList;
 //List object - each list has a name and an array of tasks, which are objects. Each task has a name and also a complete/incomplete status.
 //The initial taskList will have an example list for the user.
 let list = function(){
-    this.listID = listCount;
     this.listName="New List";
-    this.tasks=[{taskID: 0, taskName: "New Task", done: false}];
-    this.taskCount = 1;
+    this.tasks=[{taskName: "New Task", done: false}];
+};
+
+let task = function(){
+  this.taskName = "New Task";
+  this.done = false;
 };
 
 //Sets the list key for storage
@@ -42,14 +41,14 @@ let storage = new Storage(LIST_KEY);
 
 $(document).keypress(function(e) {
     if(e.which == 13) {
-        if (listCount > 0){
+        if (masterList.length > 0){
             updateList();
         }
     }
 });
 
 function displayNewestList(list){
-    if (listCount > 0){
+    if (masterList.length > 0){
         $("#delete-list-button").show();
         $("#clear-completed-button").show();
         $("#save-list-button").show();
@@ -69,10 +68,12 @@ function displayNewestList(list){
 
 function createNewList(){
     let newList = new list();
-    listCount++;
+    let newTask = new task();
+    newList.tasks.push(newTask);
+
     masterList.push(newList);
 
-    displayNewestList(masterList[listCount-1]);
+    displayNewestList(masterList[masterList.length-1]);
     displayExistingLists();
     storage.saveLists(masterList);
 }
@@ -82,7 +83,7 @@ function displayExistingLists(){
 
     $("#listDropdown").empty();
 
-    if (listCount > 0){
+    if (masterList.length > 0){
         //I thought it would be nice to display the newer lists towards the top, so we'll be doing this loop backwards
         for(let i = masterList.length-1; i > -1; i--){
             $("#listDropdown").append("<li><a href=\"#\" onclick='displaySelectedList(this.id)' id='list"+ i +"'>"+ masterList[i].listName +"</a></li>");
@@ -104,9 +105,9 @@ function displaySelectedList(id){
 function displayTasksOfSelectedList(list){
     $("#list-tasks").empty();
 
-    for (var i = 0; i < list.tasks.length; i++){
+    for (var i = 0; i < list.tasks.length-1; i++){
         if (list.tasks[i].done == false){
-            $("#list-tasks").append("<li class='list-group-item'><input type='checkbox' style='margin-right: 5px;' onclick='updateTaskStatus(this.id)' id='task-check" + list.tasks[i].taskID + "'><span contenteditable='true' id='task" + list.tasks[i].taskID + "'>"+ list.tasks[i].taskName + "</span><span style='margin-left: 20px;' class='glyphicon glyphicon-trash' aria-hidden='true' onclick='deleteTask(this.id)' id='delete-button"+ i +"'></span></li>");
+            $("#list-tasks").append("<li class='list-group-item'><input type='checkbox' style='margin-right: 5px;' onclick='updateTaskStatus(this.id)' id='task-check" + i + "'><span contenteditable='true' id='task" + i + "'>"+ list.tasks[i].taskName + "</span><span style='margin-left: 20px;' class='glyphicon glyphicon-trash' aria-hidden='true' onclick='deleteTask(this.id)' id='delete-button"+ i +"'></span></li>");
         }
     }
 
@@ -116,8 +117,7 @@ function displayTasksOfSelectedList(list){
 function createNewTask(){
     updateList();
     var list = selectedList;
-    list.taskCount += 1;
-    var newTask = {taskID: list.tasks.length-1, taskName: "New Task", done: false};
+    var newTask = new task();
 
     list.tasks.push(newTask);
     storage.saveLists(masterList);
@@ -125,15 +125,14 @@ function createNewTask(){
 }
 
 function deleteList(){
-    if (listCount > 0){
-        listCount--;
+    if (masterList.length > 0){
 
         var delList = selectedList;
         masterList.splice(masterList.indexOf(delList), 1);
 
         storage.saveLists(masterList);
 
-        selectedList = masterList[listCount - 1];
+        selectedList = masterList[masterList.length - 1];
     }
 
     displayNewestList(selectedList);
@@ -144,16 +143,10 @@ function deleteList(){
 function deleteTask(id){
     var theID = id.replace( /^\D+/g, '');
 
-    if (selectedList.taskCount > 0){
-        selectedList.taskCount--;
+    selectedList.tasks.splice(theID, 1);
 
-        selectedList.tasks.splice(theID, 1);
-        updateList();
-        storage.saveLists(masterList);
-        displayTasksOfSelectedList(selectedList);
-    }
-
-
+    displayTasksOfSelectedList(selectedList);
+    updateList();
 }
 
 function updateTaskStatus(id){
@@ -172,7 +165,7 @@ function updateTaskStatus(id){
 function clearCompleted(){
     var list = selectedList;
 
-    for(var i = 0; i < list.taskCount; i++){
+    for(var i = 0; i < list.tasks.length-1; i++){
         if (list.tasks[i].done == true) {
             $("#task" + i).closest("li").hide();
         }
@@ -184,7 +177,7 @@ function updateList(){
 
     list.listName = $("#list-title").text();
 
-    for (var i = 0; i < list.taskCount-1; i++){
+    for (var i = 0; i < list.tasks.length-1; i++){
         list.tasks[i].taskName = $("#task" + i).text();
     }
 
