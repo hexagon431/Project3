@@ -5,7 +5,7 @@ let masterList = [];
 let LIST_KEY = "masterList";
 
 //A counter that keeps track of how many lists the user has created.
-let listCount = 0;
+let listCount;
 
 //Initialize storage functions
 let storage = new Storage(LIST_KEY);
@@ -22,19 +22,6 @@ let list = function(){
     this.taskCount = 1;
 };
 
-function createNewList(){
-    let newList = new list();
-    listCount++;
-    masterList.push(newList);
-
-    displayNewestList(masterList[listCount-1]);
-    storage.saveLists(masterList);
-}
-
-function displayNewestList(list){
-
-}
-
 $(function(){
     masterList = storage.getLists();
     listCount = masterList.length;
@@ -44,8 +31,31 @@ $(function(){
     }
     else{
         displayExistingLists(masterList);
+        displayNewestList(masterList[listCount-1]);
     }
 });
+
+$(document).keypress(function(e) {
+    if(e.which == 13) {
+
+    }
+});
+
+function displayNewestList(list){
+    selectedList = list;
+    $("#list-title").text(selectedList.listName);
+    displayTasksOfSelectedList(selectedList);
+}
+
+function createNewList(){
+    let newList = new list();
+    listCount++;
+    masterList.push(newList);
+
+    displayNewestList(masterList[listCount-1]);
+    displayExistingLists();
+    storage.saveLists(masterList);
+}
 
 function displayExistingLists(){
     $("#no-lists").remove();
@@ -63,29 +73,45 @@ function displayExistingLists(){
 
 function displaySelectedList(id){
     let num = id.replace( /^\D+/g, '');
-    $("#list-title").text(masterList[num].listName);
+    selectedList = masterList[num];
+    $("#list-title").text(selectedList.listName);
 
-    displayTasksOfSelectedList(masterList[num]);
+    displayTasksOfSelectedList(selectedList);
 }
 
 function displayTasksOfSelectedList(list){
     $("#list-tasks").empty();
 
     for (var i = 0; i < list.tasks.length; i++){
-        $("#list-tasks").append("<li class='list-group-item' id='task"+ list.tasks[i].taskID +"'><input type='checkbox'>" + list.tasks[i].taskName + "</li>");
+        $("#list-tasks").append("<li class='list-group-item'><input type='checkbox'><span contenteditable='true' id='task" + list.tasks[i].taskID + "'>"+ list.tasks[i].taskName + "</span></li>");
     }
 
-    $("#list-tasks").append("<button type='button' class='btn btn-success' onclick='createNewTask("+ list +")'>+ Add New Task</button>")
+    $("#list-tasks").append("<button type='button' class='btn btn-success' onclick='createNewTask()'>+ Add New Task</button>")
 }
 
-function createNewTask(list){
+function createNewTask(){
+    var list = selectedList;
+    list.taskCount += 1;
+    var newTask = {taskID: list.taskCount-1, taskName: "New Task", done: false};
 
+    list.tasks.push(newTask);
+    displayTasksOfSelectedList(list);
 }
 
-function deleteList(list){
+function deleteList(){
 
 }
 
 function clearCompleted(){
 
+}
+
+function updateList(){
+    var list = selectedList;
+
+    list.listName = $("#list-title").text();
+
+    for (var i = 0; i < list.tasks.length-1; i++){
+        // list.tasks[i].taskName =
+    }
 }
