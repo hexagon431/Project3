@@ -83,7 +83,7 @@ function displayTasksOfSelectedList(list){
     $("#list-tasks").empty();
 
     for (var i = 0; i < list.tasks.length; i++){
-        $("#list-tasks").append("<li class='list-group-item'><input type='checkbox'><span contenteditable='true' id='task" + list.tasks[i].taskID + "'>"+ list.tasks[i].taskName + "</span></li>");
+        $("#list-tasks").append("<li class='list-group-item'><input type='checkbox' style='margin-right: 5px;'><span contenteditable='true' id='task" + list.tasks[i].taskID + "'>"+ list.tasks[i].taskName + "</span><span style='margin-left: 20px;' class='glyphicon glyphicon-trash' aria-hidden='true' onclick='deleteTask(this.id)' id='delete-button'></span></li>");
     }
 
     $("#list-tasks").append("<button type='button' class='btn btn-success' onclick='createNewTask()'>+ Add New Task</button>")
@@ -95,11 +95,23 @@ function createNewTask(){
     var newTask = {taskID: list.taskCount-1, taskName: "New Task", done: false};
 
     list.tasks.push(newTask);
+    storage.saveLists(masterList);
     displayTasksOfSelectedList(list);
 }
 
 function deleteList(){
 
+}
+
+function deleteTask(id){
+    var task=$("#" + id).closest("span").prop("id");
+    var idOfTask = task.replace( /^\D+/g, '');
+
+    selectedList.tasks.splice(selectedList.tasks.indexOf(idOfTask), 1);
+    storage.saveLists(masterList);
+    displayTasksOfSelectedList(selectedList);
+
+    console.log(task);
 }
 
 function clearCompleted(){
@@ -112,6 +124,9 @@ function updateList(){
     list.listName = $("#list-title").text();
 
     for (var i = 0; i < list.tasks.length-1; i++){
-        // list.tasks[i].taskName =
+        list.tasks[i].taskName = $("#task" + i).text();
     }
+
+    storage.saveLists(masterList);
 }
+
