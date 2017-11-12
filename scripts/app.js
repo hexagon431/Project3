@@ -1,9 +1,25 @@
+$(function(){
+    //The overall list of lists
+    let masterList = [];
 
-//The overall list of lists
-let masterList = [];
+    //A counter that keeps track of how many lists the user has created.
+    let listCount;
 
-//A counter that keeps track of how many lists the user has created.
-let listCount;
+    masterList = storage.getLists();
+    listCount = masterList.length;
+
+    if (listCount == 0){
+        $("#no-lists").show();
+        $("#delete-list-button").hide();
+        $("#clear-completed-button").hide();
+        $("#save-list-button").hide();
+    }
+    else{
+        $("#no-lists").hide();
+        displayExistingLists(masterList);
+        displayNewestList(masterList[listCount-1]);
+    }
+});
 
 //The list whose contents are being displayed
 let selectedList;
@@ -23,22 +39,6 @@ let LIST_KEY = "masterList";
 //Initialize storage functions
 let storage = new Storage(LIST_KEY);
 
-$(function(){
-    masterList = storage.getLists();
-    listCount = masterList.length;
-
-    if (listCount == 0){
-        $("#no-lists").show();
-        $("#delete-list-button").hide();
-        $("#clear-completed-button").hide();
-        $("#save-list-button").hide();
-    }
-    else{
-        $("#no-lists").hide();
-        displayExistingLists(masterList);
-        displayNewestList(masterList[listCount-1]);
-    }
-});
 
 $(document).keypress(function(e) {
     if(e.which == 13) {
