@@ -1,10 +1,10 @@
+//The overall list of lists
+let masterList = [];
+
+//A counter that keeps track of how many lists the user has created.
+let listCount;
+
 $(function(){
-    //The overall list of lists
-    let masterList = [];
-
-    //A counter that keeps track of how many lists the user has created.
-    let listCount;
-
     masterList = storage.getLists();
     listCount = masterList.length;
 
