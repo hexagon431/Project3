@@ -105,7 +105,7 @@ function displayTasksOfSelectedList(list){
     $("#list-tasks").empty();
 
     for (var i = 0; i < list.tasks.length; i++){
-        $("#list-tasks").append("<li class='list-group-item'><input type='checkbox' style='margin-right: 5px;'><span contenteditable='true' id='task" + list.tasks[i].taskID + "'>"+ list.tasks[i].taskName + "</span><span style='margin-left: 20px;' class='glyphicon glyphicon-trash' aria-hidden='true' onclick='deleteTask(this.id)' id='delete-button'></span></li>");
+        $("#list-tasks").append("<li class='list-group-item'><input type='checkbox' style='margin-right: 5px;' onclick='updateTaskStatus(this.id)' id='task-check" + list.tasks[i].taskID + "'><span contenteditable='true' id='task" + list.tasks[i].taskID + "'>"+ list.tasks[i].taskName + "</span><span style='margin-left: 20px;' class='glyphicon glyphicon-trash' aria-hidden='true' onclick='deleteTask(this.id)' id='delete-button'></span></li>");
     }
 
     $("#list-tasks").append("<button type='button' class='btn btn-success' onclick='createNewTask()'>+ Add New Task</button>")
@@ -153,8 +153,25 @@ function deleteTask(id){
 
 }
 
-function clearCompleted(){
+function updateTaskStatus(id){
+    var theID = id.replace( /^\D+/g, '');
 
+    if($("#task-check" + theID).prop('checked')){
+        selectedList.tasks[theID].done=true;
+    }
+    else{
+        selectedList.tasks[theID].done=false;
+    }
+}
+
+function clearCompleted(){
+    var list = selectedList;
+
+    for(var i = 0; i < list.taskCount; i++){
+        if (list.tasks[i].done == true) {
+            $("#task" + i).closest("li").hide();
+        }
+    }
 }
 
 function updateList(){
@@ -165,6 +182,8 @@ function updateList(){
     for (var i = 0; i < list.tasks.length; i++){
         list.tasks[i].taskName = $("#task" + i).text();
     }
+
+    displayExistingLists();
 
     storage.saveLists(masterList);
 }
