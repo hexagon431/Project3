@@ -29,6 +29,7 @@ $(function(){
     if (listCount == 0){
         $("#no-lists").show();
         $("#delete-list-button").hide();
+        $("#clear-completed-button").hide();
         $("#save-list-button").hide();
     }
     else{
@@ -51,6 +52,7 @@ $(document).keypress(function(e) {
 function displayNewestList(list){
     if (listCount > 0){
         $("#delete-list-button").show();
+        $("#clear-completed-button").show();
         $("#save-list-button").show();
         selectedList = list;
         $("#list-title").text(selectedList.listName);
@@ -60,6 +62,7 @@ function displayNewestList(list){
         $("#list-title").text("");
         $("#list-tasks").text("");
         $("#delete-list-button").hide();
+        $("#clear-completed-button").hide();
         $("#save-list-button").hide();
         $("#no-lists").show();
     }
@@ -105,7 +108,9 @@ function displayTasksOfSelectedList(list){
     $("#list-tasks").empty();
 
     for (var i = 0; i < list.tasks.length; i++){
-        $("#list-tasks").append("<li class='list-group-item'><input type='checkbox' style='margin-right: 5px;' onclick='updateTaskStatus(this.id)' id='task-check" + list.tasks[i].taskID + "'><span contenteditable='true' id='task" + list.tasks[i].taskID + "'>"+ list.tasks[i].taskName + "</span><span style='margin-left: 20px;' class='glyphicon glyphicon-trash' aria-hidden='true' onclick='deleteTask(this.id)' id='delete-button'></span></li>");
+        if (list.tasks[i].done == false){
+            $("#list-tasks").append("<li class='list-group-item'><input type='checkbox' style='margin-right: 5px;' onclick='updateTaskStatus(this.id)' id='task-check" + list.tasks[i].taskID + "'><span contenteditable='true' id='task" + list.tasks[i].taskID + "'>"+ list.tasks[i].taskName + "</span><span style='margin-left: 20px;' class='glyphicon glyphicon-trash' aria-hidden='true' onclick='deleteTask(this.id)' id='delete-button'></span></li>");
+        }
     }
 
     $("#list-tasks").append("<button type='button' class='btn btn-success' onclick='createNewTask()'>+ Add New Task</button>")
@@ -162,6 +167,8 @@ function updateTaskStatus(id){
     else{
         selectedList.tasks[theID].done=false;
     }
+
+    storage.saveLists(masterList);
 }
 
 function clearCompleted(){
