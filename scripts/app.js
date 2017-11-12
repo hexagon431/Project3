@@ -59,6 +59,7 @@ function createNewList(){
 
 function displayExistingLists(){
     $("#no-lists").remove();
+    $("#listDropdown").empty();
 
     if (listCount > 0){
         //I thought it would be nice to display the newer lists towards the top, so we'll be doing this loop backwards
@@ -100,6 +101,16 @@ function createNewTask(){
 }
 
 function deleteList(){
+    var delList = selectedList;
+    masterList.splice(masterList.indexOf(delList), 1);
+    listCount--;
+
+    storage.saveLists(masterList);
+
+    selectedList = masterList[listCount - 1];
+
+    displayNewestList(selectedList);
+    displayExistingLists();
 
 }
 
