@@ -1,14 +1,9 @@
+
 //The overall list of lists
 let masterList = [];
 
-//Sets the list key for storage
-let LIST_KEY = "masterList";
-
 //A counter that keeps track of how many lists the user has created.
 let listCount;
-
-//Initialize storage functions
-let storage = new Storage(LIST_KEY);
 
 //The list whose contents are being displayed
 let selectedList;
@@ -21,6 +16,12 @@ let list = function(){
     this.tasks=[{taskID: 0, taskName: "New Task", done: false}];
     this.taskCount = 1;
 };
+
+//Sets the list key for storage
+let LIST_KEY = "masterList";
+
+//Initialize storage functions
+let storage = new Storage(LIST_KEY);
 
 $(function(){
     masterList = storage.getLists();
@@ -44,8 +45,6 @@ $(document).keypress(function(e) {
         if (listCount > 0){
             updateList();
         }
-
-
     }
 });
 
@@ -66,8 +65,6 @@ function displayNewestList(list){
         $("#save-list-button").hide();
         $("#no-lists").show();
     }
-
-
 }
 
 function createNewList(){
@@ -109,7 +106,7 @@ function displayTasksOfSelectedList(list){
 
     for (var i = 0; i < list.tasks.length; i++){
         if (list.tasks[i].done == false){
-            $("#list-tasks").append("<li class='list-group-item'><input type='checkbox' style='margin-right: 5px;' onclick='updateTaskStatus(this.id)' id='task-check" + list.tasks[i].taskID + "'><span contenteditable='true' id='task" + list.tasks[i].taskID + "'>"+ list.tasks[i].taskName + "</span><span style='margin-left: 20px;' class='glyphicon glyphicon-trash' aria-hidden='true' onclick='deleteTask(this.id)' id='delete-button'></span></li>");
+            $("#list-tasks").append("<li class='list-group-item'><input type='checkbox' style='margin-right: 5px;' onclick='updateTaskStatus(this.id)' id='task-check" + list.tasks[i].taskID + "'><span contenteditable='true' id='task" + list.tasks[i].taskID + "'>"+ list.tasks[i].taskName + "</span><span style='margin-left: 20px;' class='glyphicon glyphicon-trash' aria-hidden='true' onclick='deleteTask(this.id)' id='delete-button"+ i +"'></span></li>");
         }
     }
 
@@ -120,7 +117,7 @@ function createNewTask(){
     updateList();
     var list = selectedList;
     list.taskCount += 1;
-    var newTask = {taskID: list.taskCount-1, taskName: "New Task", done: false};
+    var newTask = {taskID: list.tasks.length-1, taskName: "New Task", done: false};
 
     list.tasks.push(newTask);
     storage.saveLists(masterList);
@@ -145,12 +142,13 @@ function deleteList(){
 }
 
 function deleteTask(id){
+    var theID = id.replace( /^\D+/g, '');
+
     if (selectedList.taskCount > 0){
         selectedList.taskCount--;
-        var task=$("#" + id).closest("span").prop("id");
-        var idOfTask = task.replace( /^\D+/g, '');
 
-        selectedList.tasks.splice(selectedList.tasks.indexOf(idOfTask), 1);
+        selectedList.tasks.splice(theID, 1);
+        updateList();
         storage.saveLists(masterList);
         displayTasksOfSelectedList(selectedList);
     }
@@ -186,7 +184,7 @@ function updateList(){
 
     list.listName = $("#list-title").text();
 
-    for (var i = 0; i < list.tasks.length; i++){
+    for (var i = 0; i < list.taskCount-1; i++){
         list.tasks[i].taskName = $("#task" + i).text();
     }
 
