@@ -27,9 +27,12 @@ $(function(){
     listCount = masterList.length;
 
     if (listCount == 0){
-        $(".list-box").html("<div id='no-lists\'><p>You don't have any lists yet. Why not add one?</p></div>");
+        $("#no-lists").show();
+        $("#delete-list-button").hide();
+        $("#save-list-button").hide();
     }
     else{
+        $("#no-lists").hide();
         displayExistingLists(masterList);
         displayNewestList(masterList[listCount-1]);
     }
@@ -37,14 +40,31 @@ $(function(){
 
 $(document).keypress(function(e) {
     if(e.which == 13) {
+        if (listCount > 0){
+            updateList();
+        }
+
 
     }
 });
 
 function displayNewestList(list){
-    selectedList = list;
-    $("#list-title").text(selectedList.listName);
-    displayTasksOfSelectedList(selectedList);
+    if (listCount > 0){
+        $("#delete-list-button").show();
+        $("#save-list-button").show();
+        selectedList = list;
+        $("#list-title").text(selectedList.listName);
+        displayTasksOfSelectedList(selectedList);
+    }
+    else{
+        $("#list-title").text("");
+        $("#list-tasks").text("");
+        $("#delete-list-button").hide();
+        $("#save-list-button").hide();
+        $("#no-lists").show();
+    }
+
+
 }
 
 function createNewList(){
@@ -58,7 +78,8 @@ function createNewList(){
 }
 
 function displayExistingLists(){
-    $("#no-lists").remove();
+    $("#no-lists").hide();
+
     $("#listDropdown").empty();
 
     if (listCount > 0){
@@ -68,7 +89,7 @@ function displayExistingLists(){
         }
     }
     else{
-        $("#listDropdown").append();
+        $("#no-lists").show();
     }
 }
 
@@ -102,13 +123,16 @@ function createNewTask(){
 }
 
 function deleteList(){
-    var delList = selectedList;
-    masterList.splice(masterList.indexOf(delList), 1);
-    listCount--;
+    if (listCount > 0){
+        listCount--;
 
-    storage.saveLists(masterList);
+        var delList = selectedList;
+        masterList.splice(masterList.indexOf(delList), 1);
 
-    selectedList = masterList[listCount - 1];
+        storage.saveLists(masterList);
+
+        selectedList = masterList[listCount - 1];
+    }
 
     displayNewestList(selectedList);
     displayExistingLists();
@@ -116,13 +140,17 @@ function deleteList(){
 }
 
 function deleteTask(id){
-    selectedList.taskCount--;
-    var task=$("#" + id).closest("span").prop("id");
-    var idOfTask = task.replace( /^\D+/g, '');
+    if (selectedList.taskCount > 0){
+        selectedList.taskCount--;
+        var task=$("#" + id).closest("span").prop("id");
+        var idOfTask = task.replace( /^\D+/g, '');
 
-    selectedList.tasks.splice(selectedList.tasks.indexOf(idOfTask), 1);
-    storage.saveLists(masterList);
-    displayTasksOfSelectedList(selectedList);
+        selectedList.tasks.splice(selectedList.tasks.indexOf(idOfTask), 1);
+        storage.saveLists(masterList);
+        displayTasksOfSelectedList(selectedList);
+    }
+
+
 }
 
 function clearCompleted(){
@@ -140,4 +168,3 @@ function updateList(){
 
     storage.saveLists(masterList);
 }
-

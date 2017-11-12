@@ -14,7 +14,7 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="app-title">
-                ル ス ト
+                リ ス ト
             </div>
         </div>
     </nav>
@@ -42,10 +42,11 @@
 
                     </ul>
 
-                    <button type="button" class="btn btn-success" onclick="updateList()">Save List</button>
-                    <button type="button" class="btn btn-danger" onclick="deleteList()">Delete List</button>
+                    <button type="button" class="btn btn-success" onclick="updateList()" id="save-list-button">Save List</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteList()" id="delete-list-button">Delete List</button>
                 </div>
             </div>
+            <div class="well" id='no-lists'><p>You don't have any lists yet. Why not add one?</p></div>
         </div>
     </div>
 
