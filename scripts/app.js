@@ -91,6 +91,7 @@ function displayTasksOfSelectedList(list){
 }
 
 function createNewTask(){
+    updateList();
     var list = selectedList;
     list.taskCount += 1;
     var newTask = {taskID: list.taskCount-1, taskName: "New Task", done: false};
@@ -115,14 +116,13 @@ function deleteList(){
 }
 
 function deleteTask(id){
+    selectedList.taskCount--;
     var task=$("#" + id).closest("span").prop("id");
     var idOfTask = task.replace( /^\D+/g, '');
 
     selectedList.tasks.splice(selectedList.tasks.indexOf(idOfTask), 1);
     storage.saveLists(masterList);
     displayTasksOfSelectedList(selectedList);
-
-    console.log(task);
 }
 
 function clearCompleted(){
@@ -134,7 +134,7 @@ function updateList(){
 
     list.listName = $("#list-title").text();
 
-    for (var i = 0; i < list.tasks.length-1; i++){
+    for (var i = 0; i < list.tasks.length; i++){
         list.tasks[i].taskName = $("#task" + i).text();
     }
 
